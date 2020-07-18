@@ -1,3 +1,4 @@
+import { UserModule } from './../user/user.module';
 import { AuthController } from './controller/auth.controller';
 import { AuthService } from './service/auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,9 +14,11 @@ import { JwtModule } from '@nestjs/jwt';
         secret: configService.get('JWT_SECRET'),
         signOptions: { expiresIn: '100s' },
       })
-    })
+    }),
   ],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [AuthService]
 })
+
 export class AuthModule { }
