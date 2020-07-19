@@ -39,15 +39,20 @@ export class UserController {
         return this.userService.updateOne(Number(id), user);
     }
 
-    @Delete(':id')
-    async deleteOne(@Param('id') id: string): Promise<any> {
-        return this.userService.deleteOne(Number(id));
-    }
-
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put(':id/role')
     async updateRoleOfUser(@Param('id') id: string, @Body() user: User): Promise<User> {
         return await this.userService.updateRoleOfUser(Number(id), user);
     }
+    
+
+    @Delete(':id')
+    async deleteOne(@Param('id') id: string): Promise<any> {
+        return this.userService.deleteOne(Number(id));
+    }
+
+    
+
+
 }
