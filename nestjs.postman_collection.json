@@ -1,0 +1,95 @@
+{
+	"info": {
+		"_postman_id": "97bb04c0-959f-4945-bea3-1556c07fbdec",
+		"name": "nestjs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"AnhTuan\",\r\n    \"username\":\"root\",\r\n    \"password\":\"123\",\r\n    \"email\": \"anhtuan123@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOGIN user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"AnhTuan\",\r\n    \"username\":\"root\",\r\n    \"password\":\"123\",\r\n    \"email\": \"abc123@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozNywibmFtZSI6IkFuaFR1YW4iLCJ1c2VybmFtZSI6InJvb3QiLCJlbWFpbCI6ImFuaHR1YW4xMjNAZ21haWwuY29tIn0sImlhdCI6MTU5NTE0OTAyOSwiZXhwIjoxNTk1MTQ5MTI5fQ.aIhCw1eKIHhMYDX87lWOp6iH9GeeeWQKiz24AE3VFI0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

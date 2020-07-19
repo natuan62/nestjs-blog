@@ -20,6 +20,7 @@ export class UserService {
             newUser.username = user.username;
             newUser.email = user.email;
             newUser.password = passwordHashed;
+            newUser.role = user.role;
 
             const { password, ...result } = await this.userRepository.save(newUser);
             return result;
@@ -40,15 +41,19 @@ export class UserService {
         return result;
     }
 
-    updateOne(id: number, user: User): Promise<any> {
+    async updateOne(id: number, user: User): Promise<any> {
         delete user.email;
         delete user.password;
 
-        return this.userRepository.update(id, user);
+        return await this.userRepository.update(id, user);
+    }
+ 
+    async updateRoleOfUser(id: number, user: User): Promise<any> {
+        return await this.userRepository.update(id, user);
     }
 
-    deleteOne(id: number): Promise<any> {
-        return this.userRepository.delete(id);
+    async deleteOne(id: number): Promise<any> {
+        return await this.userRepository.delete(id);
     }
 
     async login(user: User): Promise<string> {
@@ -62,9 +67,9 @@ export class UserService {
 
     async validateUser(username: string, passwordParam: string): Promise<User> {
         const { password, ...result } = await this.findByUsername(username);
-        
+
         const isMatch: Boolean = await this.authService.comparePasswords(passwordParam, password);
-        
+
         if (isMatch) {
             return result;
         } else {

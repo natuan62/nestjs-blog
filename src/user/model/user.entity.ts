@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
-
+import { UserRole } from "./user.interface";
 @Entity()
 export class UserEntity {
     @PrimaryGeneratedColumn()
@@ -8,17 +8,20 @@ export class UserEntity {
     @Column()
     name: string;
 
-    @Column({unique: true})
+    @Column({ unique: true })
     username: string;
-    
-    @Column({nullable: true})
+
+    @Column({ nullable: true })
     email: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     password: string;
 
+    @Column({ nullable: true, type: 'enum', enum: UserRole, default: UserRole.USER })
+    role: UserRole;
+
     @BeforeInsert()
-    emailToLowercase(){
+    emailToLowercase() {
         this.email = this.email.toLowerCase();
     }
 }

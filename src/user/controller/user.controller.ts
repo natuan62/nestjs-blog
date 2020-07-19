@@ -1,10 +1,9 @@
-import { Roles } from './../../auth/decorator/roles.decorator';
 import { RolesGuard } from './../../auth/decorator/guards/roles.guard';
 import { JwtAuthGuard } from './../../auth/decorator/guards/jwt-auth.guard';
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { User } from './../model/user.interface';
+import { User, UserRole } from './../model/user.interface';
 import { UserService } from '../service/user.service';
-
+import { hasRoles } from 'src/auth/decorator/roles.decorator';
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService) {
@@ -28,7 +27,7 @@ export class UserController {
         return await this.userService.findOne(Number(id));
     }
 
-    @Roles('Admin')
+    @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
     async findAll(): Promise<User[]> {
@@ -45,4 +44,10 @@ export class UserController {
         return this.userService.deleteOne(Number(id));
     }
 
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put(':id/role')
+    async updateRoleOfUser(@Param('id') id: string, @Body() user: User): Promise<User> {
+        return await this.userService.updateRoleOfUser(Number(id), user);
+    }
 }
