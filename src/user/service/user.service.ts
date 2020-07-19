@@ -1,9 +1,11 @@
-import { User } from './../model/user.interface';
+import { User, UserRole } from './../model/user.interface';
 import { UserEntity } from './../model/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/service/auth.service';
+import {paginate, Pagination, IPaginationOptions} from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class UserService {
     constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
@@ -20,7 +22,7 @@ export class UserService {
             newUser.username = user.username;
             newUser.email = user.email;
             newUser.password = passwordHashed;
-            newUser.role = user.role;
+            newUser.role = UserRole.USER;
 
             const { password, ...result } = await this.userRepository.save(newUser);
             return result;
@@ -29,6 +31,13 @@ export class UserService {
             throw new Error(error);
         }
     }
+
+    async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
+         const result = await paginate<User>(this.userRepository, options);
+        //  console.log('pagi result', result);
+         result.items.forEach(v => delete v.password);
+         return result;
+      }
 
     async findAll(): Promise<User[]> {
         const result = await this.userRepository.find();
@@ -44,6 +53,7 @@ export class UserService {
     async updateOne(id: number, user: User): Promise<any> {
         delete user.email;
         delete user.password;
+        delete user.role;
 
         return await this.userRepository.update(id, user);
     }
