@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Roles } from './../../auth/decorator/roles.decorator';
+import { RolesGuard } from './../../auth/decorator/guards/roles.guard';
+import { JwtAuthGuard } from './../../auth/decorator/guards/jwt-auth.guard';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { User } from './../model/user.interface';
 import { UserService } from '../service/user.service';
 
@@ -13,8 +16,8 @@ export class UserController {
     }
 
     @Post('login')
-    async login(@Body() user: User): Promise<Object>{
-        let token =  await this.userService.login(user);
+    async login(@Body() user: User): Promise<Object> {
+        let token = await this.userService.login(user);
         return {
             access_token: token
         }
@@ -25,6 +28,8 @@ export class UserController {
         return await this.userService.findOne(Number(id));
     }
 
+    @Roles('Admin')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
     async findAll(): Promise<User[]> {
         return await this.userService.findAll();
