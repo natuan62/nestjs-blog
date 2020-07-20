@@ -1,10 +1,13 @@
 import { RolesGuard } from './../../auth/decorator/guards/roles.guard';
 import { JwtAuthGuard } from './../../auth/decorator/guards/jwt-auth.guard';
-import { Body, Controller, Delete, Get, Param, Query, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Query, Post, Put, UseGuards, UploadedFile, UseInterceptors, Request } from '@nestjs/common';
 import { User, UserRole } from './../model/user.interface';
 import { UserService } from '../service/user.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { hasRoles } from 'src/auth/decorator/roles.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService) {
@@ -73,6 +76,17 @@ export class UserController {
     }
 
 
-
-
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './avatars',
+            filename: (req, file, cb) => {
+                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+                return cb(null, `${randomName}${extname(file.originalname)}`)
+            }
+        })
+    }))
+    async upload(@UploadedFile() file) {
+        return file;
+    }
 }
