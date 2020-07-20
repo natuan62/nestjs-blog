@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/service/auth.service';
-import {paginate, Pagination, IPaginationOptions} from 'nestjs-typeorm-paginate';
-
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import {Like} from "typeorm";
 @Injectable()
 export class UserService {
     constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
@@ -33,10 +33,18 @@ export class UserService {
     }
 
     async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
-         const result = await paginate<User>(this.userRepository, options);
+        
+        const result = await paginate<User>(this.userRepository, options);
         //  console.log('pagi result', result);
-         result.items.forEach(v => delete v.password);
-         return result;
+        result.items.forEach(v => delete v.password);
+        return result;
+    }
+
+    async paginateFilter(options: IPaginationOptions): Promise<Pagination<User>> {
+        const queryBuilder = this.userRepository.createQueryBuilder('user');
+        queryBuilder.orderBy('user.id', 'DESC'); // Or whatever you need to do
+    
+        return paginate<User>(queryBuilder, options);
       }
 
     async findAll(): Promise<User[]> {
@@ -57,7 +65,7 @@ export class UserService {
 
         return await this.userRepository.update(id, user);
     }
- 
+
     async updateRoleOfUser(id: number, user: User): Promise<any> {
         return await this.userRepository.update(id, user);
     }

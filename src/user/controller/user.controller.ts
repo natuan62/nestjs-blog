@@ -24,11 +24,22 @@ export class UserController {
     }
 
     @Get()
-    async index(@Query('page') page: number = 1, @Query('limit') limit: number = 10,): Promise<Pagination<User>> {
+    async index(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('username') username: string,
+    ): Promise<Pagination<User>> {
         limit = limit > 100 ? 100 : limit;
-        return await this.userService.paginate({
-            page, limit, route: 'http://localhost:3000/users/',
-        });
+
+        if (!username) {
+            return await this.userService.paginate({
+                page, limit, route: 'http://localhost:3000/users/',
+            });
+        } else {
+            return await this.userService.paginateFilter({
+                page, limit, route: 'http://localhost:3000/users/',
+            });
+        }
     }
 
     @Get(':id')
